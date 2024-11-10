@@ -1,0 +1,5 @@
+server:
+  port: "8080"
+supabase:
+  url: "https://your-project-id.supabase.co"    # 替换为您的 Supabase 项目 URL
+  api_key: "your-service-role-key"              # 替换为您的 service_role key
