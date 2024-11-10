@@ -4,6 +4,7 @@
 
 ## 目录结构
 
+```
 sexy_backend/
 ├── cmd/                # 主要的应用程序入口
 │   └── main.go        # 主程序入口文件
@@ -23,6 +24,7 @@ sexy_backend/
 │   ├── config.go    # 配置加载逻辑
 │   └── config.yaml  # 配置文件
 └── README.md        # 项目文档
+```
 
 ## 功能特性
 
