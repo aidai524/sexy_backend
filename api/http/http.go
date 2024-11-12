@@ -10,6 +10,7 @@ import (
 	g "sexy_backend/api/gin"
 	"sexy_backend/common/ecode"
 	common "sexy_backend/common/http"
+	_ "sexy_backend/docs" // 导入生成的文档包
 	"strconv"
 	"time"
 )
@@ -26,7 +27,7 @@ func initRouter() {
 		r.Use(cors.New(cors.Config{
 			AllowOrigins:     conf.Conf.AllowOrigins,
 			AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-			AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "locale"},
+			AllowHeaders:     []string{"Origin", "Content-Length", "Content-Type", "locale", "Authorization"},
 			AllowCredentials: true,
 			MaxAge:           24 * time.Hour,
 		}))
@@ -38,6 +39,23 @@ func initRouter() {
 	app := r.Group("/api/v1")
 	{
 		app.GET("/status", ping)
+		app.GET("/project", getProject)              // 获取项目
+		app.GET("/project/search", getProjectSearch) // 搜索项目
+		app.GET("/project/list", getProjectList)     // 获取项目列表
+	}
+
+	token := r.Group("/api/v1")
+	{
+		token.GET("/account/token", getAccountToken) // 获取请求token
+	}
+
+	auth := r.Group("/api/v1")
+	auth.Use(Auth())
+	{
+		auth.POST("/project", postProject)                     // 上传项目
+		auth.POST("/project/like", postProjectLike)            // like项目
+		auth.POST("/project/un/like", postProjectUnLike)       // un like项目
+		auth.POST("/project/super/like", postProjectSuperLike) // super like项目
 	}
 
 	err := r.Run(":" + strconv.Itoa(conf.Conf.Port))

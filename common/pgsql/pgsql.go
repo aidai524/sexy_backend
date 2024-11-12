@@ -46,18 +46,48 @@ func NewGormPostgres(c *conf.Pgsql, dst []interface{}, setSharding func(db *gorm
 	}
 	pgDB.SetMaxIdleConns(c.Idle)
 	pgDB.SetMaxOpenConns(c.Active)
-	pgDB.SetConnMaxLifetime(time.Second * time.Duration(c.IdleTimeout))
+	pgDB.SetConnMaxLifetime(time.Duration(c.IdleTimeout))
 	log.Info("[Database - Init] database client setting done")
 
 	// 自动迁移数据库表结构
 	if !c.NotAutoMigrate {
-		err = db.AutoMigrate(dst...)
-		if err != nil {
-			panic(err)
+		for _, d := range dst {
+			err = AutoMigrateIfNecessary(db, d)
+			if err != nil {
+				log.Error("[Database - Init] Migrate database error: %v", err)
+				panic(err)
+			}
 		}
 	}
 	log.Info("[Database - Init] database schema auto migrated successfully")
 	return db
+}
+
+func AutoMigrateIfNecessary(db *gorm.DB, model interface{}) error {
+	// 检查表是否存在
+	if !db.Migrator().HasTable(model) {
+		// 如果表不存在，创建表
+		err := db.AutoMigrate(model)
+		if err != nil {
+			log.Error("[Database - Init] AutoMigrate table error: %v", err)
+			return err
+		}
+	} else {
+		// 检查模型中的字段是否存在
+		fields := db.Statement.Schema.Fields
+		for _, field := range fields {
+			// 对每个字段进行检查
+			if !db.Migrator().HasColumn(model, field.DBName) {
+				// 如果字段不存在，添加字段
+				err := db.Migrator().AddColumn(model, field.DBName)
+				if err != nil {
+					log.Error("[Database - Init] Migrate column error: %v", err)
+					return err
+				}
+			}
+		}
+	}
+	return nil
 }
 
 func open(c *conf.Pgsql) (db *sql.DB, err error) {

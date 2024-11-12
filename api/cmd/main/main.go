@@ -12,10 +12,10 @@ import (
 	"syscall"
 )
 
-// @title deltaTrade
+// @title sexy
 // @version 1.0
-// @description deltaTrade API 文档
-// @BasePath /api
+// @description sexy API 文档
+// @BasePath /api/v1
 func main() {
 	flag.Parse()
 	if err := conf.Init(); err != nil {
@@ -27,8 +27,6 @@ func main() {
 
 	service.Init(conf.Conf)
 	log.Info("API service init")
-	//service.InitConsumer(conf.Conf.Kafka)
-	log.Info("API service init consumer")
 	http.Init()
 
 	log.Info("API http init")

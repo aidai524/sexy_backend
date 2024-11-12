@@ -26,4 +26,5 @@ func Init(c *conf.Config) {
 		Timeout:        time.Second * time.Duration(c.Timeout),
 		supabaseClient: supabase.NewClient(c.Supabase.Url, c.Supabase.Key),
 	}
+	c.Red = API.Dao.GetRedis()
 }

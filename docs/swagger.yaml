@@ -1,0 +1,323 @@
+basePath: /api/v1
+definitions:
+  database.Project:
+    properties:
+      account:
+        type: string
+      background_story:
+        description: 背景故事
+        type: string
+      boost:
+        description: 是否提供曝光度
+        type: boolean
+      boost_time:
+        description: 是否提供曝光度
+        type: integer
+      country:
+        description: 国家信息
+        type: string
+      createdAt:
+        type: string
+      future_development:
+        description: 未来发展
+        type: string
+      icon:
+        description: 项目图标URL
+        type: string
+      id:
+        type: integer
+      like:
+        description: 喜欢
+        type: integer
+      super_like:
+        description: 超级喜欢
+        type: integer
+      tg:
+        description: 项目方的社交媒体信息
+        type: string
+      time:
+        description: 项目创建时间
+        type: integer
+      token_name:
+        description: 项目代币名称(唯一)
+        type: string
+      token_symbol:
+        description: 项目代币symbol(唯一)
+        type: string
+      un_like:
+        description: 不喜欢
+        type: integer
+      updatedAt:
+        type: string
+      video:
+        description: 视频URL
+        type: string
+      white_paper:
+        description: 白皮书URL
+        type: string
+      x:
+        description: 项目方的社交媒体信息
+        type: string
+    type: object
+info:
+  contact: {}
+  description: sexy API 文档
+  title: sexy
+  version: "1.0"
+paths:
+  /account/token:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: address
+        required: true
+        type: string
+      - in: query
+        name: signature
+        required: true
+        type: string
+      - in: query
+        name: time
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 返回的用户 token
+          schema:
+            type: string
+      summary: 获取用户token
+      tags:
+      - 全局
+  /project:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: id
+        type: integer
+      - description: 项目代币名称(唯一)
+        in: query
+        maxLength: 100
+        name: token_name
+        type: string
+      - description: 项目代币symbol(唯一)
+        in: query
+        maxLength: 50
+        name: token_symbol
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            $ref: '#/definitions/database.Project'
+      summary: 查询项目
+      tags:
+      - 项目
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 背景故事
+        in: query
+        maxLength: 2000
+        name: background_story
+        required: true
+        type: string
+      - description: 国家信息
+        in: query
+        maxLength: 300
+        name: country
+        required: true
+        type: string
+      - description: 未来发展
+        in: query
+        maxLength: 2000
+        name: future_development
+        required: true
+        type: string
+      - description: 项目图标URL
+        in: query
+        maxLength: 300
+        name: icon
+        required: true
+        type: string
+      - description: 项目方的社交媒体信息
+        in: query
+        maxLength: 300
+        name: tg
+        type: string
+      - description: 项目代币名称(唯一)
+        in: query
+        maxLength: 100
+        name: token_name
+        required: true
+        type: string
+      - description: 项目代币symbol(唯一)
+        in: query
+        maxLength: 50
+        name: token_symbol
+        required: true
+        type: string
+      - description: 视频URL
+        in: query
+        maxLength: 300
+        name: video
+        type: string
+      - description: 白皮书URL
+        in: query
+        maxLength: 300
+        name: white_paper
+        required: true
+        type: string
+      - description: 项目方的社交媒体信息
+        in: query
+        maxLength: 300
+        name: x
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: 上传项目
+      tags:
+      - 项目
+  /project/like:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: like项目
+      tags:
+      - 项目
+  /project/list:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        maximum: 100
+        name: limit
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Project'
+            type: array
+      summary: 项目列表
+      tags:
+      - 项目
+  /project/search:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        maximum: 100
+        name: limit
+        required: true
+        type: integer
+      - in: query
+        name: offset
+        type: integer
+      - in: query
+        maxLength: 100
+        name: text
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Project'
+            type: array
+      summary: 模糊搜索项目
+      tags:
+      - 项目
+  /project/super/like:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: super like项目
+      tags:
+      - 项目
+  /project/un/like:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: un like项目
+      tags:
+      - 项目
+  /status:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 响应结果
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+      summary: ping
+      tags:
+      - 系统
+swagger: "2.0"

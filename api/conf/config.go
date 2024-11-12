@@ -3,6 +3,7 @@ package conf
 import (
 	"flag"
 	"github.com/BurntSushi/toml"
+	"github.com/gomodule/redigo/redis"
 	"sexy_backend/common/conf"
 	"sexy_backend/common/log"
 	"sexy_backend/common/supabase"
@@ -19,6 +20,8 @@ type Config struct {
 	Port         int
 	Log          *log.Config
 	Pgsql        *Pgsql
+	Redis        *conf.Redis
+	Red          *redis.Pool
 	Cors         bool
 	AllowOrigins []string
 	Supabase     *supabase.Supabase

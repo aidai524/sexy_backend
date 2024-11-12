@@ -1,0 +1,474 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "sexy API 文档",
+        "title": "sexy",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/account/token": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "全局"
+                ],
+                "summary": "获取用户token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "address",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "name": "signature",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "time",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "返回的用户 token",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/project": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "项目"
+                ],
+                "summary": "查询项目",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "maxLength": 100,
+                        "type": "string",
+                        "description": "项目代币名称(唯一)",
+                        "name": "token_name",
+                        "in": "query"
+                    },
+                    {
+                        "maxLength": 50,
+                        "type": "string",
+                        "description": "项目代币symbol(唯一)",
+                        "name": "token_symbol",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "$ref": "#/definitions/database.Project"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "项目"
+                ],
+                "summary": "上传项目",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 2000,
+                        "type": "string",
+                        "description": "背景故事",
+                        "name": "background_story",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 300,
+                        "type": "string",
+                        "description": "国家信息",
+                        "name": "country",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 2000,
+                        "type": "string",
+                        "description": "未来发展",
+                        "name": "future_development",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 300,
+                        "type": "string",
+                        "description": "项目图标URL",
+                        "name": "icon",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 300,
+                        "type": "string",
+                        "description": "项目方的社交媒体信息",
+                        "name": "tg",
+                        "in": "query"
+                    },
+                    {
+                        "maxLength": 100,
+                        "type": "string",
+                        "description": "项目代币名称(唯一)",
+                        "name": "token_name",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 50,
+                        "type": "string",
+                        "description": "项目代币symbol(唯一)",
+                        "name": "token_symbol",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 300,
+                        "type": "string",
+                        "description": "视频URL",
+                        "name": "video",
+                        "in": "query"
+                    },
+                    {
+                        "maxLength": 300,
+                        "type": "string",
+                        "description": "白皮书URL",
+                        "name": "white_paper",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 300,
+                        "type": "string",
+                        "description": "项目方的社交媒体信息",
+                        "name": "x",
+                        "in": "query"
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/project/like": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "项目"
+                ],
+                "summary": "like项目",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/project/list": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "项目"
+                ],
+                "summary": "项目列表",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Project"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/project/search": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "项目"
+                ],
+                "summary": "模糊搜索项目",
+                "parameters": [
+                    {
+                        "maximum": 100,
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "maxLength": 100,
+                        "type": "string",
+                        "name": "text",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Project"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/project/super/like": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "项目"
+                ],
+                "summary": "super like项目",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/project/un/like": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "项目"
+                ],
+                "summary": "un like项目",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/status": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "系统"
+                ],
+                "summary": "ping",
+                "responses": {
+                    "200": {
+                        "description": "响应结果",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "integer"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "database.Project": {
+            "type": "object",
+            "properties": {
+                "account": {
+                    "type": "string"
+                },
+                "background_story": {
+                    "description": "背景故事",
+                    "type": "string"
+                },
+                "boost": {
+                    "description": "是否提供曝光度",
+                    "type": "boolean"
+                },
+                "boost_time": {
+                    "description": "是否提供曝光度",
+                    "type": "integer"
+                },
+                "country": {
+                    "description": "国家信息",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "future_development": {
+                    "description": "未来发展",
+                    "type": "string"
+                },
+                "icon": {
+                    "description": "项目图标URL",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "like": {
+                    "description": "喜欢",
+                    "type": "integer"
+                },
+                "super_like": {
+                    "description": "超级喜欢",
+                    "type": "integer"
+                },
+                "tg": {
+                    "description": "项目方的社交媒体信息",
+                    "type": "string"
+                },
+                "time": {
+                    "description": "项目创建时间",
+                    "type": "integer"
+                },
+                "token_name": {
+                    "description": "项目代币名称(唯一)",
+                    "type": "string"
+                },
+                "token_symbol": {
+                    "description": "项目代币symbol(唯一)",
+                    "type": "string"
+                },
+                "un_like": {
+                    "description": "不喜欢",
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "video": {
+                    "description": "视频URL",
+                    "type": "string"
+                },
+                "white_paper": {
+                    "description": "白皮书URL",
+                    "type": "string"
+                },
+                "x": {
+                    "description": "项目方的社交媒体信息",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
