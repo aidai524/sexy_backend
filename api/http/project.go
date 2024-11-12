@@ -41,7 +41,11 @@ func postProject(c *gin.Context) {
 		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: err.Error()})
 		return
 	}
-	address := c.GetString("address")
+	address := c.GetString("account")
+	if address == "" {
+		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: "account error"})
+		return
+	}
 
 	err = service.API.PostProject(address, param.TokenName, param.TokenSymbol, param.Icon, param.Video, param.BackgroundStory, param.FutureDevelopment, param.WhitePaper, param.X, param.Tg, param.Country)
 	if err != nil {
@@ -143,6 +147,11 @@ func getProjectList(c *gin.Context) {
 		return
 	}
 	account := c.GetString("account")
+	if account == "" {
+		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: "account error"})
+		return
+	}
+
 	projectList, haxNextPage, err = service.API.GetProjectList(account, param.Limit)
 	if err != nil {
 		common.ReturnError(c, err)
@@ -174,6 +183,11 @@ func postProjectLike(c *gin.Context) {
 		return
 	}
 	account := c.GetString("account")
+	if account == "" {
+		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: "account error"})
+		return
+	}
+
 	err = service.API.PostProjectLike(account, param.ID)
 	if err != nil {
 		common.ReturnError(c, err)
@@ -205,6 +219,11 @@ func postProjectUnLike(c *gin.Context) {
 		return
 	}
 	account := c.GetString("account")
+	if account == "" {
+		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: "account error"})
+		return
+	}
+
 	err = service.API.PostProjectUnLike(account, param.ID)
 	if err != nil {
 		common.ReturnError(c, err)
@@ -236,6 +255,11 @@ func postProjectSuperLike(c *gin.Context) {
 		return
 	}
 	account := c.GetString("account")
+	if account == "" {
+		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: "account error"})
+		return
+	}
+
 	err = service.API.PostProjectSuperLike(account, param.ID)
 	if err != nil {
 		common.ReturnError(c, err)
