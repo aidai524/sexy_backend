@@ -53,4 +53,4 @@ mkdir -p ${output_dir}
 docker build -t ${app_name}:${app_version} .
 
 # （可选）运行Docker镜像
-docker run -p 8081:8081 --name ${app_name} -d --restart=on-failure --log-opt max-size=5m -m 250m ${app_name}:${app_version} /app/main -conf=/app/config.toml -key="$decryption_key"
+docker run -p 8081:8081 --name ${app_name} -d --restart=on-failure --log-opt max-size=5m ${app_name}:${app_version} /app/main -conf=/app/config.toml -key="$decryption_key"
