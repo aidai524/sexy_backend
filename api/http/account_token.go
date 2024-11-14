@@ -17,7 +17,7 @@ type AccountTokenParam struct {
 
 // getAccountToken 获取用户token
 // @Summary 获取用户token
-// @Tags 全局
+// @Tags 用户
 // @Accept application/json
 // @Produce application/json
 // @Param object query AccountTokenParam false "查询参数"

@@ -39,9 +39,9 @@ func initRouter() {
 	app := r.Group("/api/v1")
 	{
 		app.GET("/status", ping)
-		app.GET("/project", getProject)              // 获取项目
-		app.GET("/project/search", getProjectSearch) // 搜索项目
-		app.GET("/project/list", getProjectList)     // 获取项目列表
+		app.GET("/project", checkAuthorization(), getProject)              // 获取项目
+		app.GET("/project/search", checkAuthorization(), getProjectSearch) // 搜索项目
+		app.GET("/project/list", checkAuthorization(), getProjectList)     // 获取项目列表
 	}
 
 	token := r.Group("/api/v1")
@@ -52,10 +52,14 @@ func initRouter() {
 	auth := r.Group("/api/v1")
 	auth.Use(Auth())
 	{
-		auth.POST("/project", postProject)                     // 上传项目
-		auth.POST("/project/like", postProjectLike)            // like项目
-		auth.POST("/project/un/like", postProjectUnLike)       // un like项目
-		auth.POST("/project/super/like", postProjectSuperLike) // super like项目
+		auth.POST("/project", postProject)                       // 上传项目
+		auth.POST("/project/like", postProjectLike)              // like项目
+		auth.POST("/project/un/like", postProjectUnLike)         // un like项目
+		auth.POST("/project/super/like", postProjectSuperLike)   // super like项目
+		auth.POST("/project/collect", postProjectCollect)        // 收藏项目
+		auth.DELETE("/project/collect", deleteProjectCollect)    // 删除收藏项目
+		auth.GET("/project/collect/list", getProjectCollectList) // 获取收藏列表
+		auth.GET("/account/data", getAccountData)                // 获取用户数据(super like数量相关)
 	}
 
 	err := r.Run(":" + strconv.Itoa(conf.Conf.Port))

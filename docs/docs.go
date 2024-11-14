@@ -15,6 +15,37 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/account/data": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "用户"
+                ],
+                "summary": "查询用户数据(super like数量相关)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "data",
+                        "schema": {
+                            "$ref": "#/definitions/model.AccountData"
+                        }
+                    }
+                }
+            }
+        },
         "/account/token": {
             "get": {
                 "consumes": [
@@ -24,7 +55,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "全局"
+                    "用户"
                 ],
                 "summary": "获取用户token",
                 "parameters": [
@@ -199,6 +230,110 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/project/collect": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "项目"
+                ],
+                "summary": "添加收藏项目",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "项目"
+                ],
+                "summary": "删除收藏项目",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {}
+            }
+        },
+        "/project/collect/list": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "项目"
+                ],
+                "summary": "收藏列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "maximum": 1000,
+                        "type": "integer",
+                        "name": "limit",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/database.Project"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/project/like": {
             "post": {
                 "consumes": [
@@ -242,6 +377,12 @@ const docTemplate = `{
                 ],
                 "summary": "项目列表",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Bearer token",
+                        "name": "Authorization",
+                        "in": "header"
+                    },
                     {
                         "maximum": 100,
                         "type": "integer",
@@ -414,11 +555,12 @@ const docTemplate = `{
                     "description": "是否提供曝光度",
                     "type": "integer"
                 },
+                "collect": {
+                    "description": "收藏数量",
+                    "type": "integer"
+                },
                 "country": {
                     "description": "国家信息",
-                    "type": "string"
-                },
-                "createdAt": {
                     "type": "string"
                 },
                 "future_development": {
@@ -432,12 +574,16 @@ const docTemplate = `{
                 "id": {
                     "type": "integer"
                 },
+                "is_collect": {
+                    "description": "是否收藏",
+                    "type": "boolean"
+                },
                 "like": {
-                    "description": "喜欢",
+                    "description": "喜欢数量",
                     "type": "integer"
                 },
                 "super_like": {
-                    "description": "超级喜欢",
+                    "description": "超级喜欢数量",
                     "type": "integer"
                 },
                 "tg": {
@@ -457,11 +603,8 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "un_like": {
-                    "description": "不喜欢",
+                    "description": "不喜欢数量",
                     "type": "integer"
-                },
-                "updatedAt": {
-                    "type": "string"
                 },
                 "video": {
                     "description": "视频URL",
@@ -474,6 +617,19 @@ const docTemplate = `{
                 "x": {
                     "description": "项目方的社交媒体信息",
                     "type": "string"
+                }
+            }
+        },
+        "model.AccountData": {
+            "type": "object",
+            "properties": {
+                "available_super_like": {
+                    "description": "可用的super like数量",
+                    "type": "integer"
+                },
+                "total_super_like": {
+                    "description": "总super like数量",
+                    "type": "integer"
                 }
             }
         }

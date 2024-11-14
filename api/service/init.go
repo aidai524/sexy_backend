@@ -27,4 +27,5 @@ func Init(c *conf.Config) {
 		supabaseClient: supabase.NewClient(c.Supabase.Url, c.Supabase.Key),
 	}
 	c.Red = API.Dao.GetRedis()
+	c.DB = API.Dao.GetDB()
 }

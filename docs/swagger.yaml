@@ -13,10 +13,11 @@ definitions:
       boost_time:
         description: 是否提供曝光度
         type: integer
+      collect:
+        description: 收藏数量
+        type: integer
       country:
         description: 国家信息
-        type: string
-      createdAt:
         type: string
       future_development:
         description: 未来发展
@@ -26,11 +27,14 @@ definitions:
         type: string
       id:
         type: integer
+      is_collect:
+        description: 是否收藏
+        type: boolean
       like:
-        description: 喜欢
+        description: 喜欢数量
         type: integer
       super_like:
-        description: 超级喜欢
+        description: 超级喜欢数量
         type: integer
       tg:
         description: 项目方的社交媒体信息
@@ -45,10 +49,8 @@ definitions:
         description: 项目代币symbol(唯一)
         type: string
       un_like:
-        description: 不喜欢
+        description: 不喜欢数量
         type: integer
-      updatedAt:
-        type: string
       video:
         description: 视频URL
         type: string
@@ -59,12 +61,41 @@ definitions:
         description: 项目方的社交媒体信息
         type: string
     type: object
+  model.AccountData:
+    properties:
+      available_super_like:
+        description: 可用的super like数量
+        type: integer
+      total_super_like:
+        description: 总super like数量
+        type: integer
+    type: object
 info:
   contact: {}
   description: sexy API 文档
   title: sexy
   version: "1.0"
 paths:
+  /account/data:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: data
+          schema:
+            $ref: '#/definitions/model.AccountData'
+      summary: 查询用户数据(super like数量相关)
+      tags:
+      - 用户
   /account/token:
     get:
       consumes:
@@ -91,7 +122,7 @@ paths:
             type: string
       summary: 获取用户token
       tags:
-      - 全局
+      - 用户
   /project:
     get:
       consumes:
@@ -192,6 +223,75 @@ paths:
       summary: 上传项目
       tags:
       - 项目
+  /project/collect:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: 删除收藏项目
+      tags:
+      - 项目
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses: {}
+      summary: 添加收藏项目
+      tags:
+      - 项目
+  /project/collect/list:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - in: query
+        maximum: 1000
+        name: limit
+        required: true
+        type: integer
+      - in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/database.Project'
+            type: array
+      summary: 收藏列表
+      tags:
+      - 项目
   /project/like:
     post:
       consumes:
@@ -217,6 +317,10 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        type: string
       - in: query
         maximum: 100
         name: limit

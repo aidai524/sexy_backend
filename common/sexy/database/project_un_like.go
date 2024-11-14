@@ -9,7 +9,8 @@ import (
 type ProjectUnLike struct {
 	Model
 	ProjectID uint64 `gorm:"type:bigint;index;column:project_id" json:"project_id"`
-	Address   string `gorm:"type:varchar(64);not null;column:address" json:"address"` // 用户地址
+	Address   string `gorm:"type:varchar(64);not null;column:address;index:idx_address_time,priority:1" json:"address"` // 用户地址
+	Time      int64  `gorm:"type:bigint;not null;column:time;index:idx_address_time,priority:2" json:"time"`
 }
 
 func (ProjectUnLike) TableName() string {
@@ -19,7 +20,7 @@ func (ProjectUnLike) TableName() string {
 // GetProjectUnLike 查询
 func GetProjectUnLike(db *gorm.DB, address string, projectID uint64) (*ProjectUnLike, error) {
 	var project ProjectUnLike
-	err := db.Where("account = ? and project_id = ?", address, projectID).First(&project).Error
+	err := db.Where("address = ? and project_id = ?", address, projectID).First(&project).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return nil, nil
 	}

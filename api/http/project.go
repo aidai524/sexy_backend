@@ -13,13 +13,13 @@ import (
 type PostProjectParam struct {
 	TokenName         string `json:"token_name" form:"token_name" binding:"required,max=100"`                  // 项目代币名称(唯一)
 	TokenSymbol       string `json:"token_symbol" form:"token_symbol" binding:"required,max=50"`               // 项目代币symbol(唯一)
-	Icon              string `json:"icon" form:"icon" binding:"required,max=300"`                              // 项目图标URL
-	Video             string `json:"video" form:"video" binding:"max=300"`                                     // 视频URL
+	Icon              string `json:"icon" form:"icon" binding:"required,max=300,url"`                          // 项目图标URL
+	Video             string `json:"video" form:"video" binding:"max=300,url"`                                 // 视频URL
 	BackgroundStory   string `json:"background_story" form:"background_story" binding:"required,max=2000"`     // 背景故事
 	FutureDevelopment string `json:"future_development" form:"future_development" binding:"required,max=2000"` // 未来发展
-	WhitePaper        string `json:"white_paper" form:"white_paper" binding:"required,max=300"`                // 白皮书URL
-	X                 string `json:"x" form:"x" binding:"max=300"`                                             // 项目方的社交媒体信息
-	Tg                string `json:"tg" form:"tg" binding:"max=300"`                                           // 项目方的社交媒体信息
+	WhitePaper        string `json:"white_paper" form:"white_paper" binding:"required,max=300,url"`            // 白皮书URL
+	X                 string `json:"x" form:"x" binding:"max=300,url"`                                         // 项目方的社交媒体信息
+	Tg                string `json:"tg" form:"tg" binding:"max=300,url"`                                       // 项目方的社交媒体信息
 	Country           string `json:"country" form:"country" binding:"required,max=300"`                        // 国家信息
 }
 
@@ -66,6 +66,7 @@ type GetProjectParam struct {
 // @Tags 项目
 // @Accept application/json
 // @Produce application/json
+// @Param Authorization header string false "Bearer token"
 // @Param object query GetProjectParam false "查询参数"
 // @Success 200 {object} database.Project "data"
 // @Router /project [get]
@@ -80,7 +81,8 @@ func getProject(c *gin.Context) {
 		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: err.Error()})
 		return
 	}
-	project, err = service.API.GetProject(param.ID, param.TokenName, param.TokenSymbol)
+	account := c.GetString("account")
+	project, err = service.API.GetProject(param.ID, account, param.TokenName, param.TokenSymbol)
 	if err != nil {
 		common.ReturnError(c, err)
 		return
@@ -99,6 +101,7 @@ type GetProjectSearchParam struct {
 // @Tags 项目
 // @Accept application/json
 // @Produce application/json
+// @Param Authorization header string false "Bearer token"
 // @Param object query GetProjectSearchParam false "查询参数"
 // @Success 200 {array} database.Project ""
 // @Router /project/search [get]
@@ -114,7 +117,9 @@ func getProjectSearch(c *gin.Context) {
 		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: err.Error()})
 		return
 	}
-	projectList, haxNextPage, err = service.API.GetProjectSearch(param.Text, param.Limit, param.Offset)
+
+	account := c.GetString("account")
+	projectList, haxNextPage, err = service.API.GetProjectSearch(account, param.Text, param.Limit, param.Offset)
 	if err != nil {
 		common.ReturnError(c, err)
 		return
@@ -131,6 +136,7 @@ type GetProjectListParam struct {
 // @Tags 项目
 // @Accept application/json
 // @Produce application/json
+// @Param Authorization header string false "Bearer token"
 // @Param object query GetProjectListParam false "查询参数"
 // @Success 200 {array} database.Project ""
 // @Router /project/list [get]
@@ -147,11 +153,6 @@ func getProjectList(c *gin.Context) {
 		return
 	}
 	account := c.GetString("account")
-	if account == "" {
-		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: "account error"})
-		return
-	}
-
 	projectList, haxNextPage, err = service.API.GetProjectList(account, param.Limit)
 	if err != nil {
 		common.ReturnError(c, err)
@@ -266,4 +267,114 @@ func postProjectSuperLike(c *gin.Context) {
 		return
 	}
 	c.JSON(ecode.OK, common.Resp(ecode.OK, nil))
+}
+
+type PostProjectCollectParam struct {
+	ID uint64 `json:"id" form:"id" binding:"required"`
+}
+
+// postProjectCollect 添加收藏项目
+// @Summary 添加收藏项目
+// @Tags 项目
+// @Accept application/json
+// @Produce application/json
+// @Param Authorization header string true "Bearer token"
+// @Param object query PostProjectCollectParam false "查询参数"
+// @Router /project/collect [post]
+func postProjectCollect(c *gin.Context) {
+	var (
+		param PostProjectCollectParam
+		err   error
+	)
+	if err = gin2.ShouldBind(c, &param); err != nil {
+		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: err.Error()})
+		return
+	}
+	account := c.GetString("account")
+	if account == "" {
+		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: "account error"})
+		return
+	}
+	err = service.API.PostProjectCollect(account, param.ID)
+	if err != nil {
+		common.ReturnError(c, err)
+		return
+	}
+	c.JSON(ecode.OK, common.Resp(ecode.OK, nil))
+}
+
+type DeleteProjectCollectParam struct {
+	ID uint64 `json:"id" form:"id" binding:"required"`
+}
+
+// deleteProjectCollect 删除收藏项目
+// @Summary 删除收藏项目
+// @Tags 项目
+// @Accept application/json
+// @Produce application/json
+// @Param Authorization header string true "Bearer token"
+// @Param object query DeleteProjectCollectParam false "查询参数"
+// @Router /project/collect [delete]
+func deleteProjectCollect(c *gin.Context) {
+	var (
+		param DeleteProjectCollectParam
+		err   error
+	)
+
+	if err = gin2.ShouldBind(c, &param); err != nil {
+		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: err.Error()})
+		return
+	}
+	account := c.GetString("account")
+	if account == "" {
+		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: "account error"})
+		return
+	}
+
+	err = service.API.DeleteProjectCollect(account, param.ID)
+	if err != nil {
+		common.ReturnError(c, err)
+		return
+	}
+	c.JSON(ecode.OK, common.Resp(ecode.OK, nil))
+}
+
+type GetProjectCollectListParam struct {
+	Limit  int `json:"limit" form:"limit" binding:"required,max=1000"`
+	Offset int `json:"offset" form:"offset" `
+}
+
+// getProjectCollectList 收藏列表
+// @Summary 收藏列表
+// @Tags 项目
+// @Accept application/json
+// @Produce application/json
+// @Param Authorization header string true "Bearer token"
+// @Param object query GetProjectCollectListParam false "查询参数"
+// @Success 200 {array} database.Project ""
+// @Router /project/collect/list [get]
+func getProjectCollectList(c *gin.Context) {
+	var (
+		param       GetProjectCollectListParam
+		projectList []*database.Project
+		haxNextPage bool
+		err         error
+	)
+
+	if err = gin2.ShouldBind(c, &param); err != nil {
+		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: err.Error()})
+		return
+	}
+	account := c.GetString("account")
+	if account == "" {
+		common.ReturnError(c, &dberror.Error{Code: ecode.RequestErr, Message: "account error"})
+		return
+	}
+
+	projectList, haxNextPage, err = service.API.GetProjectCollectList(account, param.Limit, param.Offset)
+	if err != nil {
+		common.ReturnError(c, err)
+		return
+	}
+	c.JSON(ecode.OK, common.Resp(ecode.OK, common.NewHasNextPageResult{Data: projectList, HasNextPage: haxNextPage}))
 }

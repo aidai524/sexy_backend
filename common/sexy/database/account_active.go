@@ -1,5 +1,12 @@
 package database
 
+import (
+	"errors"
+	"fmt"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
+)
+
 // AccountActive 用户活跃表
 type AccountActive struct {
 	Model
@@ -9,4 +16,32 @@ type AccountActive struct {
 
 func (AccountActive) TableName() string {
 	return "account_active"
+}
+
+// CreateAccountActive 插入用户活跃记录
+func CreateAccountActive(db *gorm.DB, address string, time int64) error {
+	accountActive := AccountActive{
+		Address: address,
+		Time:    time,
+	}
+
+	return db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "address"}, {Name: "time"}}, // 指定发生冲突的列
+		DoNothing: true,
+	}).Create(&accountActive).Error
+}
+
+// GetAccountActiveList 根据 address 和 time 列表查询用户活跃记录
+func GetAccountActiveList(db *gorm.DB, address string, times []int64) ([]*AccountActive, error) {
+	var accountActives []*AccountActive
+
+	// 查询符合 address 列表和 time 列表条件的数据
+	if err := db.Where("address = ? AND time IN ?", address, times).Find(&accountActives).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil
+		}
+		return nil, fmt.Errorf("failed to get account active records: %w", err)
+	}
+
+	return accountActives, nil
 }

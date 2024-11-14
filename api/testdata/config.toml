@@ -4,6 +4,11 @@ port = 8081
 
 AllowOrigins = ['*']
 
+[SolChain]
+rpcEndpoint = ["https://api.devnet.solana.com","https://explorer-api.devnet.solana.com"]
+RpcTransaction = ["https://api.devnet.solana.com","https://explorer-api.devnet.solana.com"]
+networkId = "dev"
+
 [Supabase]
 Url = "https://main.supa.db3.app/"
 Key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVucWxjZW54aW9sbnVndW5lem5sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA5MTMwMjksImV4cCI6MjA0NjQ4OTAyOX0.UA88XQMd10VyFwkG5jDgED0wnn5z9rmjobx8nv4voGo"

@@ -126,5 +126,5 @@ type NewPageResult struct {
 
 type NewHasNextPageResult struct {
 	Data        interface{} `json:"list"`
-	HasNextPage bool        `json:"has_next_page"`
+	HasNextPage bool        `json:"has_next_page"` // 是否有下一页
 }
