@@ -8,7 +8,7 @@
 # 例如，如果脚本在项目根目录下的 "scripts" 文件夹中，
 # 根据实际情况调整这个路径
 project_root_dir="../../"
-toml_path="/root/server/dev/sexy_backend/config/dev/"
+toml_path="/root/service/dev/sexy_backend/config/dev/"
 
 # 定义应用名称
 app_name='api_dev'
