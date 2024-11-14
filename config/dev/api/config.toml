@@ -1,0 +1,35 @@
+debug = true
+timeout = 60
+port = 8081
+
+AllowOrigins = ['*']
+
+[SolChain]
+rpcEndpoint = ["https://api.devnet.solana.com","https://explorer-api.devnet.solana.com"]
+RpcTransaction = ["https://api.devnet.solana.com","https://explorer-api.devnet.solana.com"]
+networkId = "dev"
+
+[Supabase]
+Url = "https://main.supa.db3.app/"
+Key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVucWxjZW54aW9sbnVndW5lem5sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzA5MTMwMjksImV4cCI6MjA0NjQ4OTAyOX0.UA88XQMd10VyFwkG5jDgED0wnn5z9rmjobx8nv4voGo"
+
+[log]
+dir = ""
+
+[pgsql]
+debug = true
+[pgsql.db]
+dsn = "host=103.140.238.91 user=postgres.sexy_postgre password=sexy_supabase dbname=postgres port=5432 sslmode=disable TimeZone=America/New_York"
+active = 10
+idle = 5
+IdleTimeout = "20s"
+notAutoMigrate = true
+
+[redis]
+proto = "tcp"
+addr = "103.140.238.91:6379"
+idle = 10
+active = 5
+idleTimeout = 10
+db = 1
+password = "sexy_redis"
